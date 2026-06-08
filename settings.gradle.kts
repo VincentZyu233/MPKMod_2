@@ -24,11 +24,24 @@ plugins {
 include("common")
 include("network-api:common")
 
+val optionalProjects = listOf(
+    "forge-1.8.9",
+    "fabric-1.19.4",
+    "fabric-1.20.4",
+    "fabric-1.20.6",
+    "fabric-1.21",
+    "fabric-1.21.3",
+)
+
 if (System.getenv("JITPACK") == null) {
-    include("forge-1.8.9")
-    include("fabric-1.19.4")
-    include("fabric-1.20.4")
-    include("fabric-1.20.6")
-    include("fabric-1.21")
-    include("fabric-1.21.3")
+    val ciTargetProject = System.getenv("BUILD_TARGET_PROJECT")?.trim().orEmpty()
+
+    if (ciTargetProject.isNotEmpty()) {
+        require(optionalProjects.contains(ciTargetProject)) {
+            "Unknown BUILD_TARGET_PROJECT '$ciTargetProject'. Expected one of: ${optionalProjects.joinToString(", ")}"
+        }
+        include(ciTargetProject)
+    } else {
+        optionalProjects.forEach(::include)
+    }
 }

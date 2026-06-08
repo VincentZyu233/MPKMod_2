@@ -98,6 +98,8 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build selected target
+        env:
+          BUILD_TARGET_PROJECT: ${{ needs.check.outputs.target_dir }}
         run: ./gradlew "${{ needs.check.outputs.target_dir }}:build" "${{ needs.check.outputs.target_dir }}:remapJar"
 
       - name: Prepare artifact
