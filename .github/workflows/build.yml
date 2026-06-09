@@ -161,7 +161,7 @@ jobs:
           MOD_VERSION: ${{ needs.check.outputs.mod_version }}
           REPO: ${{ github.repository }}
         run: |
-          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${RELEASE_TAG}$" | head -1)
+          PREV_TAG=$(git tag --sort=-v:refname | awk -v current="$RELEASE_TAG" '$0 != current { print; exit }')
 
           collect_changelog() {
             local range_args=("$@")
